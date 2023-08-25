@@ -1,0 +1,27 @@
+.user-list {
+  border-radius: 25px;
+  background: #ffffff;
+  width: 80%;
+  margin-bottom: 50px;
+  & table {
+    border-collapse: collapse;
+    width: 100%;
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tr {
+      color: #7f005f;
+    }
+    th {
+      font-weight: bold;
+    }
+  }
+
+  tr {
+    background-color: #f2f2f2;
+  }
+}
