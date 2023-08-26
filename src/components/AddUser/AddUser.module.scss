@@ -27,8 +27,8 @@ form {
         border-color: #4f005f;
       }
       &.invalid-input {
-        border-color: red;
-        border: 2px solid red;
+        border-color: #ff0000;
+        border: 2px solid #ff0000;
       }
     }
   }

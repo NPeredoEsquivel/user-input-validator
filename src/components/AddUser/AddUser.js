@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../../UI/Button/Button";
 import classes from "./AddUser.module.scss";
 
 const defaultUserState = {
@@ -51,6 +52,7 @@ export default function AddUser({ addUserHandler }) {
       return;
     }
     let userId = Math.random().toString(36).substring(2, 9);
+    setInputValue(defaultUserState);
     addUserHandler({ ...inputValue, userId });
   };
   return (
@@ -79,7 +81,7 @@ export default function AddUser({ addUserHandler }) {
         />
       </div>
       <div className={classes["submit-button"]}>
-        <button type="submit">Add user</button>
+        <Button type="submit">Add user</Button>
       </div>
     </form>
   );
