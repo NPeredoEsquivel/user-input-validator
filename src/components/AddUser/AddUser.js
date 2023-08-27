@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../../UI/Button/Button";
 import classes from "./AddUser.module.scss";
+import Modal from "../../UI/Modal/Modal";
 
 const defaultUserState = {
   username: "",
@@ -15,6 +16,8 @@ const defaultValidationState = {
 export default function AddUser({ addUserHandler }) {
   const [inputValue, setInputValue] = useState(defaultUserState);
   const [isFormValid, setIsFormValid] = useState(defaultValidationState);
+  const [renderErrorModal, setRenderErrorModal] = useState(false);
+  const [errorModalContent, setErrorModalContent] = useState({});
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -22,6 +25,7 @@ export default function AddUser({ addUserHandler }) {
       setIsFormValid((prevState) => {
         return { ...prevState, [name]: true };
       });
+      setRenderErrorModal(false);
     }
     setInputValue((prevState) => {
       return { ...prevState, [name]: value };
@@ -49,40 +53,75 @@ export default function AddUser({ addUserHandler }) {
     );
     if (!isValid) {
       setIsFormValid(inputsValidation);
+
+      if (!inputsValidation.username && inputsValidation.age) {
+        setErrorModalContent({
+          header: "Invalid username",
+          body: "Check username value",
+        });
+      }
+
+      if (inputsValidation.username && !inputsValidation.age) {
+        setErrorModalContent({
+          header: "Invalid age",
+          body: "Check age value",
+        });
+      }
+
+      if (!inputsValidation.username && !inputsValidation.age) {
+        setErrorModalContent({
+          header: "Invalid values",
+          body: "Check input values",
+        });
+      }
+
+      setRenderErrorModal(true);
       return;
     }
     let userId = Math.random().toString(36).substring(2, 9);
     setInputValue(defaultUserState);
     addUserHandler({ ...inputValue, userId });
   };
+
+  const modalContent = {
+    header: errorModalContent.header,
+    body: errorModalContent.body,
+    dismissModalHandler: () => setRenderErrorModal(false),
+  };
+
   return (
-    <form onSubmit={onSubmitHandler}>
-      <div className={classes["input"]}>
-        <label htmlFor="username">Username</label>
-        <input
-          className={`${!isFormValid.username ? classes["invalid-input"] : ""}`}
-          type="text"
-          name="username"
-          value={inputValue.username}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className={classes["input"]}>
-        <label htmlFor="years">Years</label>
-        <input
-          className={`${!isFormValid.age ? classes["invalid-input"] : ""}`}
-          type="number"
-          name="age"
-          value={inputValue.age}
-          onChange={handleInputChange}
-          min="0"
-          max="100"
-          step="1"
-        />
-      </div>
-      <div className={classes["submit-button"]}>
-        <Button type="submit">Add user</Button>
-      </div>
-    </form>
+    <>
+      {renderErrorModal && <Modal modalContent={modalContent} />}
+      <form onSubmit={onSubmitHandler}>
+        <div className={classes["input"]}>
+          <label htmlFor="username">Username</label>
+          <input
+            className={`${
+              !isFormValid.username ? classes["invalid-input"] : ""
+            }`}
+            type="text"
+            name="username"
+            value={inputValue.username}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className={classes["input"]}>
+          <label htmlFor="years">Years</label>
+          <input
+            className={`${!isFormValid.age ? classes["invalid-input"] : ""}`}
+            type="number"
+            name="age"
+            value={inputValue.age}
+            onChange={handleInputChange}
+            min="0"
+            max="100"
+            step="1"
+          />
+        </div>
+        <div className={classes["submit-button"]}>
+          <Button type="submit">Add user</Button>
+        </div>
+      </form>
+    </>
   );
 }
